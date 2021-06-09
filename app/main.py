@@ -1,8 +1,9 @@
 from app.models import Task, Event
-from flask import Blueprint, render_template, redirect, url_for, request
+from flask import Blueprint, render_template, redirect, url_for, request, send_from_directory
 from flask_login import login_required, current_user
 from . import db
 import datetime
+import time
 
 main = Blueprint('main', __name__)
 
@@ -23,18 +24,12 @@ def home():
         newtask = {}
         newtask["id"] = task.id
         newtask["name"] = task.name
+        timestamps = []
+        for event in allevents:
+            if event.task_id == task.id:
+                timestamps.append(datetime.datetime.timestamp(event.timestamp)*1000)
 
-        history_length = 21
-        labels = [""] * history_length
-        values = [0] * history_length
-
-        for i in range(history_length):
-            labels[i] = f"-{i}d"
-            for event in allevents:
-                if (event.task_id == task.id) and (event.timestamp > datetime.datetime.now() - datetime.timedelta(days=i+1)) and (event.timestamp < datetime.datetime.now() - datetime.timedelta(days=i)):
-                    values[i] += 1
-        newtask["graph_labels"] = labels
-        newtask["graph_values"] = values
+        newtask["event_timestamps"] = timestamps
         alltasks.append(newtask)
 
     return render_template('home.html', tasks=alltasks, graph_max=30)
@@ -82,3 +77,12 @@ def home_finished_task():
     db.session.add(new_event)
     db.session.commit()
     return redirect(url_for('main.home'))
+
+
+@ main.route('/js/<path:path>')
+def send_js(path):
+    return send_from_directory('js', path)
+
+@ main.route('/css/<path:path>')
+def send_css(path):
+    return send_from_directory('css', path)

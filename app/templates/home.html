@@ -13,74 +13,57 @@
   </div>
 </div>
 
+
+<script type="text/javascript">
+  $(document).ready(function () {
+    {% for task in tasks %}
+    $('#github_chart_{{ task.id }}').github_graph({
+      //Generate random entries from 50-> 200 entries
+      data: [{% for item in task.event_timestamps %}{{ item }}, {% endfor %}],
+      texts: ['completed task', 'completed tasks']
+    });
+    {% endfor %}
+  });
+</script>
+
+
+
 <div class="container">
   {% for task in tasks: %}
   <div class="box">
     <div class="tile">
       <div class="tile">
         <div class="box">
-            <div class="content is-large">
-              {{ task.name }}
+          <div class="content is-large">
+            {{ task.name }}
+          </div>
+          <div class="tile">
+            <div class="tile">
+              <form method="POST" action="/finished_task">
+                <div class="field">
+                  <div class="control">
+                    <input class="input" type="hidden" name="task_id" value={{ task.id }}>
+                  </div>
+                </div>
+                <button class="button is-rounded is-large is-primary is-outlined">Done</button>
+              </form>
             </div>
-          <form method="POST" action="/finished_task">
-            <div class="field">
-              <div class="control">
-                <input class="input" type="hidden" name="task_id" value={{ task.id }}>
-              </div>
+            <div class="tile">
+              <form method="POST" action="/finished_task">
+                <div class="field">
+                  <div class="control">
+                    <input class="input" type="hidden" name="task_id" value={{ task.id }}>
+                  </div>
+                </div>
+                <button class="button is-rounded is-large is-danger is-outlined" disabled>Edit</button>
+              </form>
             </div>
-            <button class="button is-rounded is-large is-primary is-outlined">Done</button>
-          </form>
-          <form method="POST" action="/finished_task">
-            <div class="field">
-              <div class="control">
-                <input class="input" type="hidden" name="task_id" value={{ task.id }}>
-              </div>
-            </div>
-            <button class="button is-rounded is-large is-danger is-outlined" disabled>Edit</button>
-          </form>
+          </div>
         </div>
       </div>
       <div class="tile">
         <div class="box">
-          <canvas id="{{ task.name }}" width="800" height="200"></canvas>
-          <script>
-            var barData = {
-              labels: [{% for item in task.graph_labels %}"{{ item }}", {% endfor %}],
-            datasets: [{
-              fillColor: "rgba(151,187,205,0.2)",
-              strokeColor: "rgba(151,187,205,1)",
-              pointColor: "rgba(151,187,205,1)",
-              pointStrokeColor: "#fff",
-              pointHighlightFill: "#fff",
-              pointHighlightStroke: "rgba(151,187,205,1)",
-              bezierCurve: false,
-              data: [{% for item in task.graph_values %}{{ item }}, {% endfor %}]
-        }]
-      }
-            Chart.defaults.global.animationSteps = 50;
-            Chart.defaults.global.tooltipYPadding = 16;
-            Chart.defaults.global.tooltipCornerRadius = 0;
-            Chart.defaults.global.tooltipTitleFontStyle = "normal";
-            Chart.defaults.global.tooltipFillColor = "rgba(0,0,0,0.8)";
-            Chart.defaults.global.animationEasing = "easeOutBounce";
-            Chart.defaults.global.responsive = false;
-            Chart.defaults.global.scaleLineColor = "black";
-            Chart.defaults.global.scaleFontSize = 16;
-            var mychart = document.getElementById("{{ task.name }}").getContext("2d");
-            steps = 10
-            max = {{ graph_max }}
-            var LineChartDemo = new Chart(mychart).Line(barData, {
-              scaleOverride: true,
-              scaleSteps: steps,
-              scaleStepWidth: Math.ceil(max / steps),
-              scaleStartValue: 0,
-              scaleShowVerticalLines: true,
-              scaleShowGridLines: true,
-              barShowStroke: true,
-              scaleShowLabels: true,
-              bezierCurve: false,
-            });
-          </script>
+          <div id="github_chart_{{ task.id }}"></div>
         </div>
       </div>
     </div>
