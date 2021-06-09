@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="hero-head is-small">
+  <div class="container has-text-centered">
+    <h1 class="title">
+      Configuration
+    </h1>
+  </div>
+</div>
+
+<div class="container">
+  Current tasks:
+
+  {% for task in tasks: %}
+  <div class="box">
+
+    <form method="POST" action="/delete_task">
+      {{ task.name }}
+      <div class="field">
+        <div class="control">
+          <input class="input" type="hidden" name="task_id" value={{ task.id }}>
+        </div>
+      </div>
+      <button class="button is-block is-danger is-large">Remove</button>
+    </form>
+  </div>
+  {% endfor %}
+</div>
+
+<div class="container mt">
+  Add a new task:
+  <form method="POST" action="/add_task">
+    <div class="field">
+      <div class="control">
+        <input class="input is-primary" type="task_name" name="task_name" placeholder="New task name" autofocus="">
+      </div>
+    </div>
+    <button class="button is-block is-info is-large is-fullwidth">Add</button>
+  </form>
+
+
+
+</div>
+
+{% endblock %}
