@@ -1,5 +1,14 @@
 {% extends "base.html" %}
 
+{% block head %}
+
+<script src="js/jquery-3.6.0.js"></script>
+<script src="js/github_contribution.js"></script>
+<link href="css/github_contribution_graph.css" rel="stylesheet" />
+
+{% endblock %}
+
+
 {% block content %}
 
 <div class="hero-body">
@@ -8,17 +17,15 @@
       Hey, {{ current_user.name }}!
     </h1>
     <h2 class="subtitle">
-      Shoutout to me fellow Rebels
+      You got this <3
     </h2>
   </div>
 </div>
-
 
 <script type="text/javascript">
   $(document).ready(function () {
     {% for task in tasks %}
     $('#github_chart_{{ task.id }}').github_graph({
-      //Generate random entries from 50-> 200 entries
       data: [{% for item in task.event_timestamps %}{{ item }}, {% endfor %}],
       texts: ['completed task', 'completed tasks']
     });
@@ -26,15 +33,13 @@
   });
 </script>
 
-
-
 <div class="container">
   {% for task in tasks: %}
   <div class="box">
     <div class="tile">
       <div class="tile">
         <div class="box">
-          <div class="content is-large">
+          <div class="content is-large has-text-centered">
             {{ task.name }}
           </div>
           <div class="tile">
@@ -49,13 +54,13 @@
               </form>
             </div>
             <div class="tile">
-              <form method="POST" action="/finished_task">
+              <form method="POST" action="/event_config">
                 <div class="field">
                   <div class="control">
                     <input class="input" type="hidden" name="task_id" value={{ task.id }}>
                   </div>
                 </div>
-                <button class="button is-rounded is-large is-danger is-outlined" disabled>Edit</button>
+                <button class="button is-rounded is-large is-warning is-outlined">Edit</button>
               </form>
             </div>
           </div>
@@ -70,4 +75,5 @@
   </div>
   {% endfor %}
 </div>
+
 {% endblock %}

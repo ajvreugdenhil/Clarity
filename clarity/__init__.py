@@ -4,11 +4,18 @@ from flask_login import LoginManager
 
 db = SQLAlchemy()
 
+
 def create_app():
     app = Flask(__name__)
 
-    app.config['SECRET_KEY'] = 'secret-key-goes-here'
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite'
+    #app.config['SECRET_KEY'] = 'secret-key-goes-here'
+    #app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite'
+
+    app.config['SECRET_KEY'] = 'temporarytestkey'
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://clarityuser:claritypassword@db/clarity'
+
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
 
     db.init_app(app)
 
@@ -24,6 +31,9 @@ def create_app():
 
     from .auth import auth as auth_blueprint
     app.register_blueprint(auth_blueprint)
+
+    from .task_logic import task_logic as task_logic_blueprint
+    app.register_blueprint(task_logic_blueprint)
 
     from .main import main as main_blueprint
     app.register_blueprint(main_blueprint)

@@ -1,0 +1,29 @@
+version: "3.1"
+
+volumes:
+  claritydb:
+
+services:
+  db:
+    image: mysql
+    restart: always
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpasswordNSRONGSNSEFLNSLPQ
+      MYSQL_DATABASE: clarity
+      MYSQL_USER: clarityuser
+      MYSQL_PASSWORD: claritypassword
+    volumes:
+      - claritydb:/var/lib/mysql
+
+  clarity:
+    image: clarity
+    build: .
+    ports:
+      - 80:80
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080

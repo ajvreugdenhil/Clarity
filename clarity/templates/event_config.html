@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="hero-head is-small">
+    <div class="container has-text-centered">
+        <h1 class="title">
+            Event mgmt
+        </h1>
+        <h2 class="subtitle">
+            {{ event_count }} events logged
+        </h2>
+    </div>
+</div>
+
+<div class="container">
+    {% for event in events: %}
+    <div class="box">
+        <div class="tile is-parent">
+            <div class="tile">
+                {{ event.timestamp }}
+            </div>
+            <div class="tile">
+                <form method="POST" action="/delete_event">
+                    <div class="field">
+                        <div class="control">
+                            <input class="input" type="hidden" name="event_id" value={{ event.id }}>
+                        </div>
+                    </div>
+                    <button class="button is-block is-danger is-large">Remove</button>
+                </form>
+            </div>
+            <div class="tile">
+                <form method="POST" action="/update_event">
+                    <div class="field">
+                        <div class="control">
+                            <input class="input" type="hidden" name="event_id" value={{ event.id }}>
+                            <input class="input" type="number" name="event_timestamp" value={{ event.timestamp }}>
+                        </div>
+                    </div>
+                    <button class="button is-block is-warning is-large">Update</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+{% endblock %}
