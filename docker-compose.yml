@@ -9,7 +9,7 @@ services:
     restart: always
     command: --default-authentication-plugin=mysql_native_password
     environment:
-      MYSQL_ROOT_PASSWORD: rootpasswordNSRONGSNSEFLNSLPQ
+      MYSQL_ROOT_PASSWORD: rootpassword
       MYSQL_DATABASE: clarity
       MYSQL_USER: clarityuser
       MYSQL_PASSWORD: claritypassword
@@ -19,6 +19,11 @@ services:
   clarity:
     image: clarity
     build: .
+    environment:
+      SECRET_KEY: temporarytestkey
+      SQLALCHEMY_DATABASE_URI: mysql://clarityuser:claritypassword@db/clarity
+      #SQLALCHEMY_DATABASE_URI: sqlite:///db.sqlite
+      ALLOW_SIGNUP: "False"
     ports:
       - 80:80
 

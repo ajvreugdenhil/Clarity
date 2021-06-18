@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, redirect, url_for, request, flash
+from flask import Blueprint, render_template, redirect, url_for, request, flash, current_app
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user, logout_user, login_required
 from .models import User
@@ -14,11 +14,19 @@ def login():
 
 @auth.route('/signup')
 def signup():
+    # FIXME properly give error
+    if not current_app.config["ALLOW_SIGNUP"]:
+        return "Not allowed"
+
     return render_template('signup.html')
 
 
 @auth.route('/signup', methods=['POST'])
 def signup_post():
+    # FIXME properly give error
+    if not current_app.config["ALLOW_SIGNUP"]:
+        return "Not allowed"
+
     email = request.form.get('email')
     name = request.form.get('name')
     password = request.form.get('password')
